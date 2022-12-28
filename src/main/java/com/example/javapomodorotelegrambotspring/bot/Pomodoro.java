@@ -41,7 +41,7 @@ public class Pomodoro {
 
         @Override
         public String getBotToken() {
-            return "5476484674:AAE3HNfDSLqkp63ygIKrKo3CtPN2jrJgBs8";
+            return "5476484674:AAGY1BH2Eai5yM3mSUvz8MEdt2TW64vknbQ";
 
         }
 

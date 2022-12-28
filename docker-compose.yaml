@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+  pomodoroapp:
+    image: "pomodoro"
+    container_name: "pomodoro-spring"
+    build: ./
+    ports:
+      - 8080:8080
