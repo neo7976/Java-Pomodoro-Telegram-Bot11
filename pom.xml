@@ -61,6 +61,13 @@
             <artifactId>postgresql</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.5.1</version>
+        </dependency>
+
 
         <!-- https://mvnrepository.com/artifact/org.telegram/telegrambots -->
         <dependency>
@@ -68,6 +75,13 @@
             <artifactId>telegrambots</artifactId>
             <version>6.3.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>4.0.3</version>
+        </dependency>
+
 
     </dependencies>
     <dependencyManagement>

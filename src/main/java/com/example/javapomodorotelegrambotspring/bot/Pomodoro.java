@@ -1,6 +1,7 @@
 package com.example.javapomodorotelegrambotspring.bot;
 
 
+import com.example.javapomodorotelegrambotspring.TimerRepository;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -15,10 +16,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Pomodoro {
     private static final ConcurrentHashMap<Timer, Long> userTimer = new ConcurrentHashMap<>();
 
-    public Pomodoro() throws TelegramApiException {
+    public Pomodoro(TimerRepository timerRepository) throws TelegramApiException {
 
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-        PomodoroBot bot = new PomodoroBot();
+        PomodoroBot bot = new PomodoroBot(timerRepository);
         telegramBotsApi.registerBot(bot);
 
         //начинается написание многопоточности
@@ -33,6 +34,11 @@ public class Pomodoro {
     }
 
     static class PomodoroBot extends TelegramLongPollingBot {
+        private final TimerRepository timerRepository;
+
+        public PomodoroBot(TimerRepository timerRepository) {
+            this.timerRepository = timerRepository;
+        }
 
         @Override
         public String getBotUsername() {
@@ -59,18 +65,22 @@ public class Pomodoro {
                         var workTime = Instant.now().plus(Long.parseLong(args[0]), ChronoUnit.MINUTES);
                         userTimer.put(new Timer(workTime, TimerType.WORK), chatId);
                         sendMsg("Давай работай!", chatId.toString());
+                        timerRepository.save(chatId.toString(), TimerType.WORK.toString());
 
                         if (args.length >= 2) {
                             var breakTime = workTime.plus(Long.parseLong(args[1]), ChronoUnit.MINUTES);
                             userTimer.put(new Timer(breakTime, TimerType.BREAK), chatId);
+                            timerRepository.save(chatId.toString(), TimerType.BREAK.toString());
 
                             if (args.length >= 3) {
                                 long cycle = Long.parseLong(args[2]) - 1;
                                 while (cycle != 0) {
                                     workTime = breakTime.plus(Long.parseLong(args[0]), ChronoUnit.MINUTES);
                                     userTimer.put(new Timer(workTime, TimerType.WORK), chatId);
+                                    timerRepository.save(chatId.toString(), TimerType.WORK.toString());
                                     breakTime = workTime.plus(Long.parseLong(args[1]), ChronoUnit.MINUTES);
                                     userTimer.put(new Timer(breakTime, TimerType.BREAK), chatId);
+                                    timerRepository.save(chatId.toString(), TimerType.BREAK.toString());
                                     cycle--;
                                 }
                             }
